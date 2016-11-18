@@ -36,7 +36,12 @@ describe("npmUtil", () => {
         let installStatus;
 
         before(() => {
-            installStatus = npmUtil.checkDevDeps(["debug", "mocha", "notarealpackage", "jshint"]);
+            installStatus = npmUtil.checkDevDeps({
+                debug: "*",
+                mocha: "*",
+                notarealpackage: "*",
+                jshint: "*",
+            });
         });
 
         it("should not find a direct dependency of the project", () => {
@@ -56,7 +61,7 @@ describe("npmUtil", () => {
         });
 
         it("should return false for a single, non-existent package", () => {
-            installStatus = npmUtil.checkDevDeps(["notarealpackage"]);
+            installStatus = npmUtil.checkDevDeps({ notarealpackage: "*" });
             assert.isFalse(installStatus.notarealpackage);
         });
 
@@ -67,7 +72,7 @@ describe("npmUtil", () => {
                 dependencies: {}
             }));
 
-            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+            const fn = npmUtil.checkDevDeps.bind(null, { "some-package": "*" });
 
             assert.doesNotThrow(fn);
         });
@@ -78,7 +83,7 @@ describe("npmUtil", () => {
             sandbox.stub(shell, "test").returns(true);
             sandbox.stub(fs, "readFileSync").returns("{ \"not: \"valid json\" }");
 
-            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+            const fn = npmUtil.checkDevDeps.bind(null, { "some-package": "*" });
 
             assert.throws(fn, "SyntaxError: Unexpected token v");
             assert(logInfo.calledOnce);
@@ -90,7 +95,12 @@ describe("npmUtil", () => {
         let installStatus;
 
         before(() => {
-            installStatus = npmUtil.checkDeps(["debug", "mocha", "notarealpackage", "jshint"]);
+            installStatus = npmUtil.checkDeps({
+                debug: "*",
+                mocha: "*",
+                notarealpackage: "*",
+                jshint: "*",
+            });
         });
 
         it("should find a direct dependency of the project", () => {
@@ -110,13 +120,13 @@ describe("npmUtil", () => {
         });
 
         it("should return false for a single, non-existent package", () => {
-            installStatus = npmUtil.checkDeps(["notarealpackage"]);
+            installStatus = npmUtil.checkDeps({ notarealpackage: "*" });
             assert.isFalse(installStatus.notarealpackage);
         });
 
         it("should throw if no package.json can be found", () => {
             assert.throws(() => {
-                installStatus = npmUtil.checkDeps(["notarealpackage"], "/fakepath");
+                installStatus = npmUtil.checkDeps({ notarealpackage: "*" }, "/fakepath");
             }, "Could not find a package.json file");
         });
 
@@ -127,7 +137,7 @@ describe("npmUtil", () => {
                 devDependencies: {}
             }));
 
-            const fn = npmUtil.checkDeps.bind(null, ["some-package"]);
+            const fn = npmUtil.checkDeps.bind(null, { "some-package" : "*" });
 
             assert.doesNotThrow(fn);
 
@@ -141,7 +151,7 @@ describe("npmUtil", () => {
             sandbox.stub(shell, "test").returns(true);
             sandbox.stub(fs, "readFileSync").returns("{ \"not: \"valid json\" }");
 
-            const fn = npmUtil.checkDevDeps.bind(null, ["some-package"]);
+            const fn = npmUtil.checkDevDeps.bind(null, { "some-package": "*" });
 
             assert.throws(fn, "SyntaxError: Unexpected token v");
             assert(logInfo.calledOnce);
